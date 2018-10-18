@@ -1,0 +1,35 @@
+spring:
+  cloud:
+    consul:
+      # host: 120.77.159.229
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        healthCheckUrl: http://127.0.0.1:8601/health
+        healthCheckInterval: 5s
+        instance-id: consumer-server
+  application:
+    name: consumer-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName:  com.mysql.jdbc.Driver
+    url:  jdbc:mysql://127.0.0.1/transsnet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    username: root
+    password: 123456
+server:
+  port: 8601
+mybatis:
+  mapper-locations: classpath:orm/*.xml  #注意：一定要对应mapper映射xml文件的所在路径
+
+#pagehelper分页插件
+pagehelper:
+    helperDialect: mysql
+    reasonable: true
+    supportMethodsArguments: true
+    params: count=countSql
+
+#mybatis显示SQL打印   
+#logging:
+#  level:
+#    com.mapper: info
+  

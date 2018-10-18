@@ -1,0 +1,29 @@
+#server:
+#  port: 9005
+#spring:
+#  application:
+#    name: consumer-server
+#  cloud:
+#    zookeeper:
+#      connect-string: 39.108.55.232:2181
+#    stream: 
+#      kafka: 
+#        binder:
+#          brokers: 39.108.55.232:9092
+#          zk-nodes: 39.108.55.232:2181
+#          minPartitionCount: 1
+#          autoCreateTopics: true
+#          autoAddPartitions: true
+#          min-partition-count: 1
+#      bindings:
+#        input:
+#          destination: cctv1
+#          group: s1
+#          consumer:
+#            autoCommitOffset: false
+#            concurrency: 1
+#            partitioned: false
+#eureka:
+#  client:
+#    serviceUrl:
+#      defaultZone: http://localhost:8707/eureka/

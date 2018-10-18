@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: consumer-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName:  com.mysql.jdbc.Driver
+    url:  jdbc:mysql://127.0.0.1/transsnet?useUnicode=true&characterEncoding=UTF-8&autoReconnect=true&useSSL=false
+    username: root
+    password: 123456
+server:
+  port: 8601
+  
