@@ -2,6 +2,8 @@ package com.web;
 
 import javax.annotation.Resource;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixProperty;
 import com.service.AsyncService;
 
+@Api(description = "账户相关", tags = "USER")
 @RestController
 public class WebController {
 
@@ -55,14 +58,14 @@ public class WebController {
 	/*
 	@Autowired
 	private OtherConfig otherConfig;*/
-	
-	@RequestMapping("/api/testinfo")
+    @ApiOperation("1、测试微服务调用")
+    @RequestMapping(value = "/doInfo", method = RequestMethod.GET)
 	@HystrixCommand(groupKey = "myGroup", // group标识，一个group使用一个线程池
 	commandKey = "doInfo", // 当前执行的方法
 	fallbackMethod = "serviceFailure", commandProperties = {
-			@HystrixProperty(name = "execution.timeout.enabled", value = "true"),// 是否打开超时
+			@HystrixProperty(name = "execution.timeout.enabled", value = "false"),// 是否打开超时
 			@HystrixProperty(name = "execution.isolation.thread.timeoutInMilliseconds", value = "50000"),// 指定多久超时，单位毫秒。超时进fallback
-			@HystrixProperty(name = "circuitBreaker.enabled", value = "true"), // 是否开启熔断
+			@HystrixProperty(name = "circuitBreaker.enabled", value = "false"), // 是否开启熔断
 			@HystrixProperty(name = "circuitBreaker.requestVolumeThreshold", value = "10"),// 判断熔断的最少请求数，默认是10；只有在一个统计窗口内处理的请求数量达到这个阈值，才会进行熔断与否的判断
 			@HystrixProperty(name = "circuitBreaker.errorThresholdPercentage", value = "10") // 判断熔断的阈值，默认值50，表示在一个统计窗口内有50%的请求处理失败，会触发熔断
 	}, threadPoolProperties = {
@@ -75,7 +78,10 @@ public class WebController {
 	@Log(before = false, after = false, duration = true)
 	public Object doInfo(@RequestParam("userName") String userName)
 			throws Exception {
+        logger.debug("开始去请求服务器提供者");
 		logger.info("开始去请求服务器提供者");
+        logger.warn("开始去请求服务器提供者");
+        logger.error("开始去请求服务器提供者");
 		/*
 		 * long systime = System.currentTimeMillis(); if (systime % 2 == 0) {
 		 * throw new ArithmeticException("test error"); } else { throw new
@@ -89,14 +95,16 @@ public class WebController {
 		return userName + ",the service is not available !";
 	}
 
+    @ApiOperation("2、心跳")
 	@RequestMapping(value = "/health", method = RequestMethod.GET)
 	public String health() {
 		return "hello health ";
 	}
 
+    @ApiOperation("3、测试异步调用")
 	@RequestMapping(value = "/testAsyn", method = RequestMethod.GET)
 	public String testAsyn() {
-		asyncService.asyncInvokeSimplest(1000 * 1000);
+		asyncService.asyncInvokeSimplest(1 * 1000);
 		// String ret = asyncService.asyncInvokeWithException("xp,");
 		// asyncService.asyncInvokeReturnFuture(99);
 		logger.info("doOther");
@@ -104,12 +112,14 @@ public class WebController {
 	}
 
 	@Log
+    @ApiOperation("4、数据库查询")
 	@RequestMapping(value = "/testQuery", method = RequestMethod.GET)
 	public String testQuery() {
 		User user = asyncService.selectByPrimaryKey(1);
 		return JSONObject.toJSONString(user);
 	}
 
+    @ApiOperation("5、数据库查询所有")
 	@RequestMapping(value = "/testQueryAll", method = RequestMethod.GET)
 	public String testQueryAll(@RequestParam int startPage,
 			@RequestParam int pageSize) {
@@ -117,6 +127,7 @@ public class WebController {
 		return JSONObject.toJSONString(list);
 	}
 
+    @ApiOperation("6、数据库新增")
 	@Log
 	@RequestMapping(value = "/testAdd", method = RequestMethod.GET)
 	public Object testAdd() {
@@ -133,7 +144,8 @@ public class WebController {
 		}
 		return ret;
 	}
-	
+
+    @ApiOperation("7、数据库新增")
 	@Log
 	@RequestMapping(value = "/testAnno", method = RequestMethod.GET)
 	public Object testAnno() {

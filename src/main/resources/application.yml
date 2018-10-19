@@ -1,6 +1,4 @@
 spring:
-  application:
-    name: consumer-server
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName:  com.mysql.jdbc.Driver

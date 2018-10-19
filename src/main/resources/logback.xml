@@ -34,8 +34,9 @@
 	<logger name="io.undertow" level="info" />
 	<logger name="springfox.documentation" level="info" />
 	<logger name="com.mapper" level="info" />
+    <logger name="com.web" level="debug" /> <!--如果单独配置了某个目录则优先以当前配置的级别为主-->
 	<root>
-		<level value="INFO" />
+		<level value="error" /> <!--如果没有单独配置，则以根目录配置的级别为主-->
 		<appender-ref ref="stdout" />
 		<appender-ref ref="rollingfile" />
 	</root>

@@ -1,28 +1,34 @@
 package com.web;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alibaba.fastjson.JSONObject;
 import com.dto.AutoLog;
 import com.service.ElasticSearchService;
- 
+
+@Api(description = "ES相关", tags = "Elastic")
 @RestController
 @RequestMapping("/es")
 public class ElasticSearchController {
 	
     @Autowired
     private ElasticSearchService empServive;
-    
-    @RequestMapping("/test")
+
+    @ApiOperation("1、测试")
+    @RequestMapping(value = "/test", method = RequestMethod.GET)
 	public String test (){
     	return "ok";
     }
 	
 	//增加
-	@RequestMapping("/add")
+    @ApiOperation("2、es新增")
+    @RequestMapping(value = "/add", method = RequestMethod.GET)
 	public String add(@RequestParam("className") String className, @RequestParam("time") String time) {
 		AutoLog log = new AutoLog();
 		log.setApplicationName("m-front");
@@ -41,13 +47,15 @@ public class ElasticSearchController {
 	}
 	
 	 //查询
-	@RequestMapping("/queryAll")
+     @ApiOperation("3、数据库查询")
+     @RequestMapping(value = "/queryAll", method = RequestMethod.GET)
 	public String queryAll() {
 		return JSONObject.toJSONString(empServive.findAllAutoLog());
 	}
 	
 	//分页查询
-	@RequestMapping("/queryAllByPage")
+    @ApiOperation("4、数据库分页查询")
+    @RequestMapping(value = "/queryAllByPage", method = RequestMethod.GET)
 	public String queryAllByPage(@RequestParam("startPage") int startPage, @RequestParam("pageSize") int pageSize) {
 		return JSONObject.toJSONString(empServive.findByPage(startPage, pageSize));
 	}
