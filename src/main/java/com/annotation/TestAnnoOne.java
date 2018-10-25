@@ -2,6 +2,7 @@ package com.annotation;
 
 import javax.annotation.Resource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import com.feign.FeignClientTest;
@@ -41,7 +42,7 @@ public class TestAnnoOne {
 			        return new UserInfo(country());
 			    }
             }
-            @Configuration与@Component的区别在于，@Configuration中用userInfo中得到的Country与自己调用country()得到的是用一个Country对象，@Component
+            @Configuration与@Component的区别在于，@Configuration中用userInfo中得到的Country与自己调用country()得到的是同一个Country对象，@Component
                                     则是不同对象，@Component 注解并没有通过 cglib 来代理@Bean 方法的调用，调用任何方法，使用任何变量，拿到的是原始对象
             三、@Bean       
           @Bean 只能放在方法上，就是产生一个Bean，然后交给Spring容器
@@ -62,13 +63,65 @@ public class TestAnnoOne {
 	   @Qualifier("softService"),使用 @Autowired时，如果找到多个同一类型的bean，则会抛异常，此时可以使用 @Qualifier("beanName")，明确指定bean的名称进行注入，此时与 @Resource指定name属性作用相同。
 	
 	 六、@FreshScope
-	spring-cloud 实现更新配置不用重启服务 @FreshScope
-	浏览器上输入localhost:8889/foo会看到获取到的数据。去gitlab修改下fzk-beta.properties，重新在浏览器上输入，发现现在获取的还是原来的数据，并没有修改。从服务端(http://localhost:8888/fzk/beta)可以获取到最新的数据。这里想让client端不重启服务就能获取到更新后的数据需要手动发送一个post请求到client端(http://localhost:8889/fresh)
-    $ curl -X POST http://localhost:8889/refresh
-    ["config.client.version","fzk.nick"]
-            所以想说的是，这里并不是完全的自动。还需要调用一个接口，这个接口一般是通过存放config的push事件来触发的，如果一个服务可以直接写在webhook中。但是如果需要触发多个服务自动更新，可以在jenkins配置一个job，webhook出去这个job，这个job来触发多个服务的post请求操作。
-	
-	
+        spring-cloud 实现更新配置不用重启服务 @FreshScope
+        浏览器上输入localhost:8889/foo会看到获取到的数据。去gitlab修改下fzk-beta.properties，重新在浏览器上输入，发现现在获取的还是原来的数据，并没有修改。从服务端(http://localhost:8888/fzk/beta)可以获取到最新的数据。这里想让client端不重启服务就能获取到更新后的数据需要手动发送一个post请求到client端(http://localhost:8889/fresh)
+        $ curl -X POST http://localhost:8889/refresh
+        ["config.client.version","fzk.nick"]
+        所以想说的是，这里并不是完全的自动。还需要调用一个接口，这个接口一般是通过存放config的push事件来触发的，如果一个服务可以直接写在webhook中。但是如果需要触发多个服务自动更新，可以在jenkins配置一个job，webhook出去这个job，这个job来触发多个服务的post请求操作。
+	七、@Primary   英[ˈpraɪməri]
+        在众多相同的bean中，优先选择用@Primary注解的bean（该注解加在各个bean上）
+    八、@Qualifier 英[ˈkwɒlɪfaɪə(r)]
+        在众多相同的bean中，@Qualifier指定需要注入的bean（该注解跟随在@Autowired后）
+    九、 @Conditional
+         @Conditional是Spring4新提供的注解，它的作用是按照一定的条件进行判断，满足条件给容器注册bean。
+
+    一个方法只能注入一个bean实例，所以@Conditional标注在方法上只能控制一个bean实例是否注入。
+            @Configuration
+            public class BeanConfig {
+                //只有一个类时，大括号可以省略
+                //如果WindowsCondition的实现方法返回true，则注入这个bean
+                @Conditional({WindowsCondition.class})
+                @Bean(name = "bill")
+                public Person person1(){
+                    return new Person("Bill Gates",62);
+                }
+
+                //如果LinuxCondition的实现方法返回true，则注入这个bean
+                @Conditional({LinuxCondition.class})
+                @Bean("linus")
+                public Person person2(){
+                    return new Person("Linus",48);
+                }
+            }
+            ---------------------
+    一个类中可以注入很多实例，@Conditional标注在类上就决定了一批bean是否注入。
+        public class ObstinateCondition implements Condition {
+            @Override
+            public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
+                 return true; // true注入：false不注入
+            }
+        }
+        public class ObstinateCondition implements Condition {
+            @Override
+            public boolean matches(ConditionContext conditionContext, AnnotatedTypeMetadata annotatedTypeMetadata) {
+                 return true;
+            }
+        }
+        @Conditional({WindowsCondition.class,ObstinateCondition.class})
+        @Configuration
+        public class BeanConfig {
+            @Bean(name = "bill")
+            public Person person1(){
+                return new Person("Bill Gates",62);
+            }
+
+            @Bean("linus")
+            public Person person2(){
+                return new Person("Linus",48);
+            }
+        ---------------------
+       第一个条件类实现的方法返回true，第二个返回false，则结果false，不注入进容器。
+       第一个条件类实现的方法返回true，第二个返回true，则结果true，注入进容器中。
 	*/
 	
 	@Autowired
@@ -79,7 +132,11 @@ public class TestAnnoOne {
 	
 	@Resource(name = "TestAnnoTwo") //(name="", type=AsyncService.class)
 	private TestAnnoTwo testAnnoTwo_1;
-	
+
+    @Autowired
+    @Qualifier("OperaSinger") //如果有多个指定特定的
+    private Singer singer;
+
 	public void test () {
 		//测试单例，多例--（结果：testAnnoTwo_0与testAnnoTwo_1是不是同一个对象，取决于TestAnnoTwo对象@Scope）
 		testAnnoTwo_0.getName();
@@ -89,21 +146,19 @@ public class TestAnnoOne {
 		TestAnnoTwo testAnnoTwo_3 = getBeanTwo_other();
 		testAnnoTwo_2.getName();
 		testAnnoTwo_3.getName();
+		//测试 @Primary
+        System.out.println(singer.sing("pyx"));
 	}
-	
+
 	@Bean
 	public TestAnnoTwo getBeanTwo () {
 		return new TestAnnoTwo();
 	}
-	
+
 	@Bean
 	public TestAnnoTwo getBeanTwo_other () {
 		return getBeanTwo();
 	}
 	
-	public static void main(String[] args) {
-		
-
-	}
 
 }

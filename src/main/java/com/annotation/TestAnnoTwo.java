@@ -1,6 +1,7 @@
 package com.annotation;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
@@ -12,7 +13,7 @@ session： 定义bean的范围是http会话（springMVC中有效）
 global-session：定义bean的范围是全局http会话（portlet中有效）
 */
 @Component("TestAnnoTwo") //给自己在Spring容器中取个名字
-@Scope("singleton") // singleton(单例)、prototype(多例) 
+@Scope("singleton") // singleton(单例)、prototype(多例)
 @PropertySource("classpath:httpclient.properties")
 public class TestAnnoTwo {
 	

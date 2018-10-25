@@ -2,6 +2,7 @@ package com.web;
 
 import javax.annotation.Resource;
 
+import com.annotation.*;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
@@ -14,9 +15,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import com.alibaba.druid.support.json.JSONUtils;
 import com.alibaba.fastjson.JSONObject;
-import com.annotation.TestAnnoOne;
-import com.annotation.TestAnnoThr;
-import com.annotation.TestAnnoTwo;
 import com.aspect.Log;
 import com.dto.PageDto;
 import com.dto.SimpleObj;
@@ -52,9 +50,26 @@ public class WebController {
 	
 	@Resource(name = "piyingxu")
 	private TestAnnoThr testAnnoThr_1; //来源于@Configuration("piyingxu")
+
+    @Resource(name = "beanAA") //来源于@Bean注解，根据name（ConditionalOnMissingBeanConfig）
+    private A a;
+
+    @Resource(type =B.class) //来源于@Bean注解，根据type（ConditionalOnMissingBeanConfig）
+    private B b;
 	
 	@Autowired
 	private SimpleObj simpleObj;
+
+
+    @ApiOperation("0、测试注解调用")
+    @RequestMapping(value = "/anno", method = RequestMethod.GET)
+    public void testAnnoSimple() {
+        testAnnoOne.test();
+        a.AdoSth();
+        b.BdoSth();
+    }
+
+
 	/*
 	@Autowired
 	private OtherConfig otherConfig;*/
