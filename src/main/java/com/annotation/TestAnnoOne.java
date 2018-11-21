@@ -58,7 +58,13 @@ public class TestAnnoOne {
 		(1)、@Autowired默认按照byType方式进行bean匹配，@Resource默认按照byName方式进行bean匹配
 		(2)、@Autowired是Spring的注解，@Resource是J2EE的注解，这个看一下导入注解的时候这两个注解的包名就一清二楚了
 	
-	    @Resource 中的name表示我所要注入的目标对象来源于容器中的哪个对象，根据名字找，type则根据Class的类型找
+	     @Resource 中的name表示我所要注入的目标对象来源于容器中的哪个对象，根据名字找，type则根据Class的类型找
+
+	     @Resource // (没有定义name) 如果此处是Temporary temp11, 会先根据temp11寻找, 找不到的时候再根据Temporary寻找
+         Temporary temp2;
+         @Resource(name = "arg1")
+         AunotationBean arg1; // 定义了name属性的值, 就只按照name值匹配
+
 	 五、@Qualifier
 	   @Qualifier("softService"),使用 @Autowired时，如果找到多个同一类型的bean，则会抛异常，此时可以使用 @Qualifier("beanName")，明确指定bean的名称进行注入，此时与 @Resource指定name属性作用相同。
 	

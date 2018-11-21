@@ -54,8 +54,8 @@ dependencies {
     // compile 'org.springframework.cloud:spring-cloud-starter-zookeeper-discovery:2.0.0.RELEASE'
     
     //consul注册中心
-    //compile 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
-    //compile 'org.springframework.cloud:spring-cloud-dependencies:Dalston.RELEASE'
+    compile 'org.springframework.cloud:spring-cloud-starter-consul-discovery'
+    compile 'org.springframework.cloud:spring-cloud-dependencies:Dalston.RELEASE'
     
     //json
     compile 'com.alibaba:fastjson:1.2.34'
