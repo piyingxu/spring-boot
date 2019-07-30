@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.alibaba.fastjson.JSONObject;
+import com.util.temp.Security;
+import com.util.temp.TransactionStatus;
+import com.util.temp.VendorSpecificInfo;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.StatusLine;
@@ -81,12 +85,34 @@ public class HttpClientUtil {
 		}
 		return null;
 	}
-	
-	public static void main (String str[]) throws Exception {
+
+    private static Security getSecurityInfo() {
+        Security security = new Security();
+        security.setLogin("Ubagroup0");
+        security.setPassword("asdf123456");
+        return security;
+    }
+
+
+
+    private static VendorSpecificInfo getVendorSpecificInfo() {
+        VendorSpecificInfo info = new VendorSpecificInfo();
+        info.setClientId("2350");
+        return info;
+    }
+
+
+    public static void main (String str[]) throws Exception {
 		Map<String, String> header = new HashMap<>();
 		header.put("Accept", "application/json;charset=utf-8");
 		header.put("Content-Type", "application/json;charset=utf-8");
-		AuditLogPageReq req = new AuditLogPageReq();
+        TransactionStatus status = new TransactionStatus();
+        status.setSecurity(getSecurityInfo());
+        status.setTransactionId("GHTRPI190108115244943");
+        status.setHstransactionId(String.valueOf(System.currentTimeMillis()));
+        status.setRoutingTag("UBARCV-GH-BANK");
+        status.setVendorSpecificFields(getVendorSpecificInfo());
+		/*AuditLogPageReq req = new AuditLogPageReq();
 		req.setUserId("1111");
 		for (int i=0;i<100;i++) {
 		//while(true) {
@@ -98,7 +124,22 @@ public class HttpClientUtil {
 	            }
 	        });  
 	        t.start(); 
-		}
+		}*/
+
+		String jsonStr = JSONObject.toJSONString(status).replace("security", "Security").replace("password", "Password")
+                .replace("client", "Client");
+        System.out.println(jsonStr);
+
+        String ret = HttpClientUtil.doPost("http://34.245.13.82/uba/remittanceplatform/accountinformation", header, jsonStr);
+        System.out.println(ret);
+
+
+
+
+
+
+
+
 	 }
 
 

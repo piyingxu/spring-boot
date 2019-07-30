@@ -10,12 +10,12 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
-@EnableDiscoveryClient
+//@EnableDiscoveryClient
 @EnableSwagger2
 @EnableFeignClients
-@EnableCircuitBreaker
+//@EnableCircuitBreaker
 // /@EnableHystrixDashboard
-@EnableAsync
+//@EnableAsync
 // 支持多个包扫描，以逗号隔开
 @MapperScan({ "com.mapper" })
 public class ConsumerApplication {
