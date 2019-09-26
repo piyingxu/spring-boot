@@ -8,6 +8,9 @@ import io.swagger.annotations.ApiModelProperty;
  */
 public class PayWriteCacheDto {
 
+    @ApiModelProperty("可用积分")
+    private Long availablePoint;
+
     @ApiModelProperty(value = "付款人手续费", required = false, example = "100", hidden = false)
     private Long fee;
 
@@ -40,6 +43,14 @@ public class PayWriteCacheDto {
 
     @ApiModelProperty(value = "平台出税费", required = false, example = "100", hidden = false)
     private Long platformVat;
+
+    public Long getAvailablePoint() {
+        return availablePoint;
+    }
+
+    public void setAvailablePoint(Long availablePoint) {
+        this.availablePoint = availablePoint;
+    }
 
     public Long getFee() {
         return fee;
