@@ -1,12 +1,3 @@
-spring:
-  cloud:
-    consul:
-      host: 127.0.0.1
-      port: 8500
-      discovery:
-        hostname: 127.0.0.1
-  application:
-    name: consumer-server
 server:
   port: 8601
   
